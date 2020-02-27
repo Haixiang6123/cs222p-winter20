@@ -21,6 +21,17 @@ public:
     RC close() { return -1; };
 };
 
+// RM_IndexScanIterator is an iterator to go through index entries
+class RM_IndexScanIterator {
+public:
+    RM_IndexScanIterator() {};    // Constructor
+    ~RM_IndexScanIterator() {};    // Destructor
+
+    // "key" follows the same format as in IndexManager::insertEntry()
+    RC getNextEntry(RID &rid, void *key) { return RM_EOF; };    // Get next matching entry
+    RC close() { return -1; };                        // Terminate index scan
+};
+
 // Relation Manager
 class RelationManager {
 public:
@@ -30,11 +41,11 @@ public:
 
     RC deleteCatalog();
 
-    RC createTable(const std::string &tableName, const std::vector<Attribute> &attrs);
+    RC createTable(const std::string &tableName, const std::vector <Attribute> &attrs);
 
     RC deleteTable(const std::string &tableName);
 
-    RC getAttributes(const std::string &tableName, std::vector<Attribute> &attrs);
+    RC getAttributes(const std::string &tableName, std::vector <Attribute> &attrs);
 
     RC insertTuple(const std::string &tableName, const void *data, RID &rid);
 
@@ -46,7 +57,7 @@ public:
 
     // Print a tuple that is passed to this utility method.
     // The format is the same as printRecord().
-    RC printTuple(const std::vector<Attribute> &attrs, const void *data);
+    RC printTuple(const std::vector <Attribute> &attrs, const void *data);
 
     RC readAttribute(const std::string &tableName, const RID &rid, const std::string &attributeName, void *data);
 
@@ -56,13 +67,27 @@ public:
             const std::string &conditionAttribute,
             const CompOp compOp,                  // comparison type such as "<" and "="
             const void *value,                    // used in the comparison
-            const std::vector<std::string> &attributeNames, // a list of projected attributes
+            const std::vector <std::string> &attributeNames, // a list of projected attributes
             RM_ScanIterator &rm_ScanIterator);
 
-// Extra credit work (10 points)
+    // Extra credit work (10 points)
     RC addAttribute(const std::string &tableName, const Attribute &attr);
 
     RC dropAttribute(const std::string &tableName, const std::string &attributeName);
+
+    // QE IX related
+    RC createIndex(const std::string &tableName, const std::string &attributeName);
+
+    RC destroyIndex(const std::string &tableName, const std::string &attributeName);
+
+    // indexScan returns an iterator to allow the caller to go through qualified entries in index
+    RC indexScan(const std::string &tableName,
+                 const std::string &attributeName,
+                 const void *lowKey,
+                 const void *highKey,
+                 bool lowKeyInclusive,
+                 bool highKeyInclusive,
+                 RM_IndexScanIterator &rm_IndexScanIterator);
 
 protected:
     RelationManager();                                                  // Prevent construction
@@ -70,6 +95,8 @@ protected:
     RelationManager(const RelationManager &);                           // Prevent construction by copying
     RelationManager &operator=(const RelationManager &);                // Prevent assignment
 
+private:
+    static RelationManager *_relation_manager;
 };
 
 #endif
