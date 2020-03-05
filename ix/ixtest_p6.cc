@@ -31,15 +31,16 @@ int testCase_p6(const std::string &indexFileName, const Attribute &attribute) {
 
     // insert entries
     for (unsigned i = 0; i < numOfTuples; i++) {
-        sprintf(key + 4, "%05d", i % 3);
+        char k = 'A' + i % 5;
+        sprintf(key + 4, "0000%s", &k);
 
         rid.pageNum = i;
-        rid.slotNum = i % 3;
+        rid.slotNum = i % 5;
 
         rc = indexManager.insertEntry(ixFileHandle, attribute, &key, rid);
         assert(rc == success && "indexManager::insertEntry() should not fail.");
 
-        if (i % 3 == 1) {
+        if (i % 5 == 1) {
             inRidPageNumSum += rid.pageNum;
         }
     }
@@ -49,9 +50,9 @@ int testCase_p6(const std::string &indexFileName, const Attribute &attribute) {
     indexManager.printBtree(ixFileHandle, attribute);
 
     *(int *) lowKey = 5;
-    sprintf(lowKey + 4, "%05d", 1);
+    sprintf(lowKey + 4, "0000B");
     *(int *) highKey = 5;
-    sprintf(highKey + 4, "%05d", 1);
+    sprintf(highKey + 4, "0000B");
 
     // scan
     rc = indexManager.scan(ixFileHandle, attribute, lowKey, highKey, true, true, ix_ScanIterator);
@@ -70,8 +71,8 @@ int testCase_p6(const std::string &indexFileName, const Attribute &attribute) {
         outRidPageNumSum += rid.pageNum;
         count++;
     }
-    std::cout << "The number of scanned entries: " << count << std::endl;
-    if (count != 30 || outRidPageNumSum != inRidPageNumSum || inRidPageNumSum == 0 || outRidPageNumSum == 0) {
+    std::cout << std::endl << "The number of scanned entries: " << count << std::endl;
+    if (count != 18 || outRidPageNumSum != inRidPageNumSum || inRidPageNumSum == 0 || outRidPageNumSum == 0) {
         std::cout << "Wrong entries output...failure " << std::endl;
         indexManager.closeFile(ixFileHandle);
         indexManager.destroyFile(indexFileName);

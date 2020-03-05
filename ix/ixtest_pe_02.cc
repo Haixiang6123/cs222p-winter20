@@ -3,9 +3,9 @@
 
 void prepareKeyAndRid(const unsigned count, const unsigned i, char *key, RID &rid) {
     *(int *) key = count;
-    for (unsigned j = 0; j < count; j++) {
-        *(key + 4 + j) = 96 + i;
-    }
+
+    *(key + 4) = 96 + i;
+
     rid.pageNum = i;
     rid.slotNum = i;
 }
@@ -85,14 +85,11 @@ int main() {
     indexManager.destroyFile(indexEmpNameFileName);
 
     if (testCase_Private_Extra_2(indexEmpNameFileName, attrEmpName) == success) {
-        std::cout << "IX_Test Private Extra Case 02 finished. The result will be examined." << std::endl;
+        std::cout << std::endl << "IX_Test Private Extra Case 02 finished. The result will be examined." << std::endl;
         return success;
     } else {
-        std::cout << "IX_Test Private Extra Case 02 failed." << std::endl;
+        std::cout << std::endl << "IX_Test Private Extra Case 02 failed." << std::endl;
         return fail;
     }
 
 }
-
-
-

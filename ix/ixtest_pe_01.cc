@@ -6,12 +6,12 @@ int testCase_extra_1(const std::string &indexFileName, const Attribute &attribut
     std::cout << std::endl << "***** In IX Private Test Extra Case 01 *****" << std::endl;
 
     RID rid;
-    unsigned numOfTuples = 10000;
-    unsigned numExtra = 5000;
+    unsigned numOfTuples = 20000;
+    unsigned numExtra = 10000;
     unsigned key;
     IXFileHandle ixFileHandle;
     IX_ScanIterator ix_ScanIterator;
-    int compVal1 = 9, compVal2 = 15;
+    int compVal1 = 10, compVal2 = 20;
     int count = 0;
 
     //create index file(s)
@@ -24,7 +24,7 @@ int testCase_extra_1(const std::string &indexFileName, const Attribute &attribut
 
     // insert entry
     for (unsigned i = 1; i <= numOfTuples; i++) {
-        key = i % 10;
+        key = i % 15;
         rid.pageNum = i;
         rid.slotNum = i;
 
@@ -33,9 +33,9 @@ int testCase_extra_1(const std::string &indexFileName, const Attribute &attribut
     }
 
     for (unsigned i = numOfTuples; i < numOfTuples + numExtra; i++) {
-        key = i % 10 + 10;
+        key = i % 15 + 20;
         rid.pageNum = i;
-        rid.slotNum = i + 10;
+        rid.slotNum = i + 5;
 
         rc = indexManager.insertEntry(ixFileHandle, attribute, &key, rid);
         assert(rc == success && "indexManager::insertEntry() should not fail.");
@@ -60,7 +60,7 @@ int testCase_extra_1(const std::string &indexFileName, const Attribute &attribut
     }
 
     std::cout << "Number of scanned entries: " << count << std::endl << std::endl;
-    if (count != 1000) {
+    if (count != 1333) {
         std::cout << "Wrong entries output... The test failed" << std::endl;
         ix_ScanIterator.close();
         indexManager.closeFile(ixFileHandle);
@@ -80,7 +80,7 @@ int testCase_extra_1(const std::string &indexFileName, const Attribute &attribut
     while (ix_ScanIterator.getNextEntry(rid, &key) == success) {
         count++;
 
-        if (rid.pageNum != (rid.slotNum - 10) || key != compVal2) {
+        if (rid.pageNum != (rid.slotNum - 5) || key != compVal2) {
             std::cout << "Wrong entries output... The test failed" << std::endl;
         }
 
@@ -90,7 +90,7 @@ int testCase_extra_1(const std::string &indexFileName, const Attribute &attribut
     }
 
     std::cout << "Number of scanned entries: " << count << std::endl;
-    if (count != 500) {
+    if (count != 666) {
         std::cout << "Wrong entries output... The test failed" << std::endl;
         ix_ScanIterator.close();
         indexManager.closeFile(ixFileHandle);

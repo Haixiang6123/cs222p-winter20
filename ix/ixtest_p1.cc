@@ -1,7 +1,7 @@
 #include "ix.h"
 #include "ix_test_util.h"
 
-RC closeWithFail(const string &indexFileName1, const string &indexFileName2, IXFileHandle &ixFileHandle1,
+RC closeWithFail(const std::string &indexFileName1, const std::string &indexFileName2, IXFileHandle &ixFileHandle1,
                  IXFileHandle &ixFileHandle2, IX_ScanIterator &ix_ScanIterator1, IX_ScanIterator &ix_ScanIterator2) {
     ix_ScanIterator1.close();
     ix_ScanIterator2.close();
@@ -25,10 +25,10 @@ int testCase_p1(const std::string &indexFileName1, const std::string &indexFileN
     IXFileHandle ixFileHandle2;
     IX_ScanIterator ix_ScanIterator1;
     IX_ScanIterator ix_ScanIterator2;
-    unsigned numOfTuples = 2000;
+    unsigned numOfTuples = 3000;
     float key;
     float key2;
-    float compVal = 6500;
+    float compVal = 4000;
     unsigned inRidPageNumSum = 0;
     unsigned outRidPageNumSum = 0;
 
@@ -48,7 +48,7 @@ int testCase_p1(const std::string &indexFileName1, const std::string &indexFileN
 
     // insert entry
     for (unsigned i = 1; i <= numOfTuples; i++) {
-        key = (float) i + 87.6;
+        key = (float) i + 67.6;
         rid.pageNum = i;
         rid.slotNum = i;
 
@@ -65,7 +65,7 @@ int testCase_p1(const std::string &indexFileName1, const std::string &indexFileN
 
     // insert more entries
     for (unsigned i = 6000; i <= numOfTuples + 6000; i++) {
-        key = (float) i + 87.6;
+        key = (float) i + 67.6;
         rid.pageNum = i;
         rid.slotNum = i - (unsigned) 500;
 

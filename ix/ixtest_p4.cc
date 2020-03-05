@@ -2,7 +2,7 @@
 #include "ix.h"
 #include "ix_test_util.h"
 
-RC closeWithFail(const string &indexFileName1, const string &indexFileName2, IXFileHandle &ixFileHandle1,
+RC closeWithFail(const std::string &indexFileName1, const std::string &indexFileName2, IXFileHandle &ixFileHandle1,
                  IXFileHandle &ixFileHandle2) {
     indexManager.closeFile(ixFileHandle1);
     indexManager.closeFile(ixFileHandle2);
@@ -88,9 +88,9 @@ int testCase_p4(const std::string &indexFileName1, const Attribute &attribute1, 
     }
 
     *(int *) lowKey = 5;
-    sprintf(lowKey + 4, "%05d", 30801);
+    sprintf(lowKey + 4, "%05d", 2000);
     *(int *) highKey = 5;
-    sprintf(highKey + 4, "%05d", 30900);
+    sprintf(highKey + 4, "%05d", 30000);
 
     rc = indexManager.scan(ixFileHandle1, attribute1, lowKey, highKey, true, true, ix_ScanIterator1);
     assert(rc == success && "indexManager::scan() should not fail.");
@@ -107,7 +107,7 @@ int testCase_p4(const std::string &indexFileName1, const Attribute &attribute1, 
         }
         count++;
     }
-    if (count != 100) {
+    if (count != 28001) {
         std::cout << "Wrong output count! expected: 100, actual: " << count << " ...Failure" << std::endl;
         return closeWithFail(indexFileName1, indexFileName2, ixFileHandle1, ixFileHandle2);
     }
@@ -144,11 +144,11 @@ int main() {
     const std::string indexEmpNameFileName1 = "private_empname_shortidx";
     const std::string indexEmpNameFileName2 = "private_empname_longidx";
     Attribute attrShortEmpName;
-    attrShortEmpName.length = 10;
+    attrShortEmpName.length = 20;
     attrShortEmpName.name = "ShortEmpName";
     attrShortEmpName.type = TypeVarChar;
     Attribute attrLongEmpName;
-    attrLongEmpName.length = 100;
+    attrLongEmpName.length = 200;
     attrLongEmpName.name = "LongEmpName";
     attrLongEmpName.type = TypeVarChar;
 

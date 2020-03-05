@@ -4,9 +4,7 @@
 
 void prepareKeyAndRid(const unsigned count, const unsigned i, char *key, RID &rid) {
     *(int *) key = count;
-    for (unsigned j = 0; j < count; j++) {
-        key[4 + j] = 'a' + i - 1;
-    }
+    key[4] = 'A' + i % 26;
     rid.pageNum = i;
     rid.slotNum = i;
 }
@@ -19,7 +17,7 @@ int testCase_p5(const std::string &indexFileName, const Attribute &attribute) {
     RID rid;
     IXFileHandle ixFileHandle;
     IX_ScanIterator ix_ScanIterator;
-    unsigned numOfTuples = 7;
+    unsigned numOfTuples = 9;
     char key[PAGE_SIZE];
     unsigned count = attribute.length;
 
@@ -38,20 +36,20 @@ int testCase_p5(const std::string &indexFileName, const Attribute &attribute) {
         rc = indexManager.insertEntry(ixFileHandle, attribute, &key, rid);
         assert(rc == success && "indexManager::insertEntry() should not fail.");
     }
-
-    // insert the 8th
-    prepareKeyAndRid(count, i++ * 10, key, rid);
-    rc = indexManager.insertEntry(ixFileHandle, attribute, &key, rid);
-    assert(rc == success && "indexManager::insertEntry() should not fail.");
-
-    // print BTree, by this time the BTree should have 2 or 3 level 
-    // depend on the design of your root
+    // print BTree, by this time the BTree should have 2 level
     indexManager.printBtree(ixFileHandle, attribute);
+    std::cout << "-------------------------------" << std::endl;
 
-    // insert the 9th
-    prepareKeyAndRid(count, i++ * 10, key, rid);
-    rc = indexManager.insertEntry(ixFileHandle, attribute, &key, rid);
-    assert(rc == success && "indexManager::insertEntry() should not fail.");
+    // insert the 10th - 13th
+    for (; i <= 13; i++) {
+        prepareKeyAndRid(count, i * 10, key, rid);
+        rc = indexManager.insertEntry(ixFileHandle, attribute, &key, rid);
+        assert(rc == success && "indexManager::insertEntry() should not fail.");
+
+    }
+    // print BTree, by this time the BTree should have 3 level
+    indexManager.printBtree(ixFileHandle, attribute);
+    std::cout << "-------------------------------" << std::endl;
 
     unsigned readPageCountInsert = 0;
     unsigned writePageCountInsert = 0;
@@ -60,6 +58,11 @@ int testCase_p5(const std::string &indexFileName, const Attribute &attribute) {
     unsigned readPageCountScan = 0;
     unsigned writePageCountScan = 0;
     unsigned appendPageCountScan = 0;
+
+    unsigned readPageCountIterate = 0;
+    unsigned writePageCountIterate = 0;
+    unsigned appendPageCountIterate = 0;
+
 
     // collect counters
     rc = ixFileHandle.collectCounterValues(readPageCountInsert, writePageCountInsert, appendPageCountInsert);
@@ -74,8 +77,9 @@ int testCase_p5(const std::string &indexFileName, const Attribute &attribute) {
     rc = ixFileHandle.collectCounterValues(readPageCountScan, writePageCountScan, appendPageCountScan);
     assert(rc == success && "indexManager::collectCounterValues() should not fail.");
 
-    std::cout << "After Initialization of Scan - R:" << readPageCountScan << " W:" << writePageCountScan << " A:"
-              << appendPageCountScan << std::endl;
+    std::cout << "After Initialization of Scan - R:" << readPageCountScan - readPageCountInsert << " W:"
+              << writePageCountScan - writePageCountInsert << " A:"
+              << appendPageCountScan - appendPageCountInsert << std::endl;
 
     count = 0;
     while (ix_ScanIterator.getNextEntry(rid, &key) == success) {
@@ -83,11 +87,12 @@ int testCase_p5(const std::string &indexFileName, const Attribute &attribute) {
         count++;
     }
 
-    rc = ixFileHandle.collectCounterValues(readPageCountScan, writePageCountScan, appendPageCountScan);
+    rc = ixFileHandle.collectCounterValues(readPageCountIterate, writePageCountIterate, appendPageCountIterate);
     assert(rc == success && "indexManager::collectCounterValues() should not fail.");
 
-    std::cout << "After Iteration - R:" << readPageCountScan << " W:" << writePageCountScan << " A:"
-              << appendPageCountScan << std::endl;
+    std::cout << "Iteration - R:" << readPageCountIterate - readPageCountScan << " W:"
+              << writePageCountIterate - writePageCountScan << " A:"
+              << appendPageCountIterate - appendPageCountScan << std::endl;
 
     unsigned roughLeafReadCount = readPageCountScan - readPageCountInsert;
     // If the B+Tree index is 3 level: 1 hidden-page + 3 I/O + 9 scan I/O per entry at maximum  = 13
@@ -120,7 +125,7 @@ int main() {
     const std::string indexEmpNameFileName = "private_empname_idx";
 
     Attribute attrEmpName;
-    attrEmpName.length = PAGE_SIZE / 4;  // each node could only have 3 children
+    attrEmpName.length = PAGE_SIZE / 4 ;  // each node could only have 3 children
     attrEmpName.name = "EmpName";
     attrEmpName.type = TypeVarChar;
 

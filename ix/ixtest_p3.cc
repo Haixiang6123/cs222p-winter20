@@ -35,9 +35,9 @@ int testCase_p3(const std::string &indexFileName, const Attribute &attribute) {
     }
 
     *(int *) lowKey = 6;
-    sprintf(lowKey + 4, "%06d", 90000);
+    sprintf(lowKey + 4, "011zyx");
     *(int *) highKey = 6;
-    sprintf(highKey + 4, "%06d", 100000);
+    sprintf(highKey + 4, "06abcd");
 
     // Conduct a scan
     rc = indexManager.scan(ixFileHandle, attribute, lowKey, highKey, true, true, ix_ScanIterator);
@@ -47,14 +47,14 @@ int testCase_p3(const std::string &indexFileName, const Attribute &attribute) {
     count = 0;
     while (ix_ScanIterator.getNextEntry(rid, &key) != IX_EOF) {
         key[10] = '\0';
-        if (count % 2000 == 0) {
-            fprintf(stderr, "output: %s\n", key + 4);
+        if (count % 5000 == 0) {
+            fprintf(stdout, "output: %s\n", key + 4);
         }
         count++;
     }
 
-    if (count != 10001) {
-        std::cout << "Wrong output count! expected: 10001" << ", actual: " << count << " Failure" << std::endl;
+    if (count != 58000) {
+        std::cout << "Wrong output count! expected: 58000" << ", actual: " << count << " Failure" << std::endl;
         ix_ScanIterator.close();
         indexManager.closeFile(ixFileHandle);
         indexManager.destroyFile(indexFileName);
