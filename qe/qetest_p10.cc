@@ -6,7 +6,7 @@ RC privateTestCase_10() {
     // (+5 extra credit points will be given based on the results of the basic aggregation related tests)
     // 1. Basic aggregation - COUNT
     // SELECT COUNT(largeleft.B) from largeleft
-    std::cerr << std::endl << "***** In QE Private Test Case 10 *****" << std::endl;
+    std::cout << std::endl << "***** In QE Private Test Case 10 *****" << std::endl;
 
     RC rc = success;
 
@@ -44,18 +44,18 @@ RC privateTestCase_10() {
 
     while (agg->getNextTuple(data) != QE_EOF) {
         countVal = *(float *) ((char *) data + 1);
-        std::cerr << "COUNT(largeleft.B) " << countVal << std::endl;
+        std::cout << "COUNT(largeleft.B) " << countVal << std::endl;
         memset(data, 0, sizeof(int));
         count++;
         if (count > 1) {
-            std::cerr << "***** The number of returned tuple is not correct. *****" << std::endl;
+            std::cout << "***** The number of returned tuple is not correct. *****" << std::endl;
             rc = fail;
             break;
         }
     }
 
     if (countVal != 990.0) {
-        std::cerr << "***** The returned value: " << countVal << " is not correct. *****" << std::endl;
+        std::cout << "***** The returned value: " << countVal << " is not correct. *****" << std::endl;
         rc = fail;
     }
 
@@ -70,10 +70,10 @@ RC privateTestCase_10() {
 int main() {
 
     if (privateTestCase_10() != success) {
-        std::cerr << "***** [FAIL] QE Test Case 10 failed. *****" << std::endl;
+        std::cout << "***** [FAIL] QE Test Case 10 failed. *****" << std::endl;
         return fail;
     } else {
-        std::cerr << "***** QE Private Test Case 10 finished. The result will be examined. *****" << std::endl;
+        std::cout << "***** QE Private Test Case 10 finished. The result will be examined. *****" << std::endl;
         return success;
     }
 }

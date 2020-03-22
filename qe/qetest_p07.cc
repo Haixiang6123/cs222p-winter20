@@ -4,7 +4,7 @@ RC privateTestCase_7() {
     // Optional for all
     // (+10 extra credit points will be given based on the results of the GHJ related tests)
     // 1. GHJoin -- on Varchar Attribute
-    std::cerr << std::endl << "***** In QE Test Private Test Case 7 *****" << std::endl;
+    std::cout << std::endl << "***** In QE Test Private Test Case 7 *****" << std::endl;
 
     RC rc = success;
 
@@ -61,24 +61,24 @@ RC privateTestCase_7() {
 
         // At this point, partitions should be on disk.
 
-        std::cerr << (actualResultCnt + 1) << " / " << expectedResultCnt << " tuples: ";
+        std::cout << (actualResultCnt + 1) << " / " << expectedResultCnt << " tuples: ";
         int offset = 0;
         // is an attribute leftvarchar.A NULL?
         nullBit = *(unsigned char *) ((char *) data) & ((unsigned) 1 << (unsigned) 7);
         if (nullBit) {
-            std::cerr << std::endl << "***** A returned value is not correct. *****" << std::endl;
+            std::cout << std::endl << "***** A returned value is not correct. *****" << std::endl;
             rc = fail;
             break;
         }
 
         // Print left.A
-        std::cerr << "leftvarchar.A " << *(int *) ((char *) data + offset + 1);
+        std::cout << "leftvarchar.A " << *(int *) ((char *) data + offset + 1);
         offset += sizeof(int);
 
         // is an attribute left.B NULL?
         nullBit = *(unsigned char *) ((char *) data) & ((unsigned) 1 << (unsigned) 6);
         if (nullBit) {
-            std::cerr << std::endl << "***** A returned value is not correct. *****" << std::endl;
+            std::cout << std::endl << "***** A returned value is not correct. *****" << std::endl;
             rc = fail;
             break;
         }
@@ -90,12 +90,12 @@ RC privateTestCase_7() {
         memcpy(b, (char *) data + offset + 1, length);
         b[length] = '\0';
         offset += length;
-        std::cerr << " B " << b;
+        std::cout << " B " << b;
 
         // is an attribute right.C NULL?
         nullBit = *(unsigned char *) ((char *) data) & ((unsigned) 1 << (unsigned) 4);
         if (nullBit) {
-            std::cerr << std::endl << "***** A returned value is not correct. *****" << std::endl;
+            std::cout << std::endl << "***** A returned value is not correct. *****" << std::endl;
             rc = fail;
             break;
         }
@@ -104,7 +104,7 @@ RC privateTestCase_7() {
         offset = offset + 4 + length;
 
         // Print right.C
-        std::cerr << "  rightvarchar.C " << *(float *) ((char *) data + offset + 1) << std::endl;
+        std::cout << "  rightvarchar.C " << *(float *) ((char *) data + offset + 1) << std::endl;
 
         memset(data, 0, bufSize);
         actualResultCnt++;
@@ -112,7 +112,7 @@ RC privateTestCase_7() {
     }
 
     if (expectedResultCnt != actualResultCnt) {
-        std::cerr << "***** The number of returned tuple: " << actualResultCnt << " is not correct. *****" << std::endl;
+        std::cout << "***** The number of returned tuple: " << actualResultCnt << " is not correct. *****" << std::endl;
         rc = fail;
     }
 
@@ -128,10 +128,10 @@ RC privateTestCase_7() {
 int main() {
 
     if (privateTestCase_7() != success) {
-        std::cerr << "***** [FAIL] QE Private Test Case 7 failed. *****" << std::endl;
+        std::cout << "***** [FAIL] QE Private Test Case 7 failed. *****" << std::endl;
         return fail;
     } else {
-        std::cerr << "***** QE Private Test Case 7 finished. The result will be examined. *****" << std::endl;
+        std::cout << "***** QE Private Test Case 7 finished. The result will be examined. *****" << std::endl;
         return success;
     }
 }

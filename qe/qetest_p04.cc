@@ -5,11 +5,13 @@ RC privateTestCase_4() {
     // Functions Tested
     // Filter
     // BNLJoin - optional for undergrad solo
-    std::cerr << std::endl << "***** In QE Private Test Case 4 *****" << std::endl;
+    std::cout << std::endl << "***** In QE Private Test Case 4 *****" << std::endl;
 
     // Prepare the iterator and condition
     auto *leftIn = new TableScan(rm, "largeleft2");
     auto *rightIn = new TableScan(rm, "largeright2");
+    int lowerBoundB = 20;
+    int upperBoundB = 1009;
 
     // Set up condition
     Condition filterCond;
@@ -19,7 +21,7 @@ RC privateTestCase_4() {
     Value value1{};
     value1.type = TypeInt;
     value1.data = malloc(bufSize);
-    *(int *) value1.data = 1109;
+    *(int *) value1.data = upperBoundB;
     filterCond.rhsValue = value1;
 
     // Create Filter
@@ -31,7 +33,7 @@ RC privateTestCase_4() {
     joinCond.bRhsIsAttr = true;
     joinCond.rhsAttr = "largeright2.B";
 
-    int expectedResultCnt = 1090; //20~1109 --> largeleft2.B: [10,1109], largeright2.B: [20,50019]
+    int expectedResultCnt = 990; //20~1109 --> largeleft2.B: [10,1109], largeright2.B: [20,50019]
     int actualResultCnt = 0;
     int valueB = 0;
 
@@ -74,9 +76,9 @@ RC privateTestCase_4() {
         // right.D
         rd = *(int *) ((char *) data + offset);
 
-        if (valueB < 20 || valueB > 1109) {
-            std::cerr << "***** [FAIL] Incorrect value: " << valueB << " returned. *****" << std::endl;
-            std::cerr << "count:" << actualResultCnt << " lA:" << la << " lB:" << lb << " lC:" << lc << " rB:" << valueB
+        if (valueB < lowerBoundB || valueB > upperBoundB) {
+            std::cout << "***** [FAIL] Incorrect value: " << valueB << " returned. *****" << std::endl;
+            std::cout << "count:" << actualResultCnt << " lA:" << la << " lB:" << lb << " lC:" << lc << " rB:" << valueB
                       << " rC:" << rC << " rD:" << rd << std::endl;
             rc = fail;
             break;
@@ -86,8 +88,8 @@ RC privateTestCase_4() {
     }
 
     if (expectedResultCnt != actualResultCnt) {
-        std::cerr << " ***** Expected Result Count: " << expectedResultCnt << std::endl;
-        std::cerr << " ***** [FAIL] The number of result: " << actualResultCnt << " is not correct. ***** "
+        std::cout << " ***** Expected Result Count: " << expectedResultCnt << std::endl;
+        std::cout << " ***** [FAIL] The number of result: " << actualResultCnt << " is not correct. ***** "
                   << std::endl;
         rc = fail;
     }
@@ -105,25 +107,25 @@ int main() {
     // Indexes created: largeright2.B
 
     if (createLargeRightTable2() != success) {
-        std::cerr << "***** [FAIL] QE Private Test Case 4 failed. *****" << std::endl;
+        std::cout << "***** [FAIL] QE Private Test Case 4 failed. *****" << std::endl;
         return fail;
     }
 
     if (populateLargeRightTable2() != success) {
-        std::cerr << "***** [FAIL] QE Private Test Case 4 failed. *****" << std::endl;
+        std::cout << "***** [FAIL] QE Private Test Case 4 failed. *****" << std::endl;
         return fail;
     }
 
     if (createIndexforLargeRightB2() != success) {
-        std::cerr << "***** [FAIL] QE Private Test Case 4 failed. *****" << std::endl;
+        std::cout << "***** [FAIL] QE Private Test Case 4 failed. *****" << std::endl;
         return fail;
     }
 
     if (privateTestCase_4() != success) {
-        std::cerr << "***** [FAIL] QE Private Test Case 4 failed. *****" << std::endl;
+        std::cout << "***** [FAIL] QE Private Test Case 4 failed. *****" << std::endl;
         return fail;
     } else {
-        std::cerr << "***** QE Private Test Case 4 finished. The result will be examined. *****" << std::endl;
+        std::cout << "***** QE Private Test Case 4 finished. The result will be examined. *****" << std::endl;
         return success;
     }
 }

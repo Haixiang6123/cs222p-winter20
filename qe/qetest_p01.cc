@@ -6,11 +6,11 @@ RC privateTestCase_1() {
     // Table scan with filter
     // Index scan with filter
     //compare the results from both scans
-    std::cerr << std::endl << "***** In QE Private Test Case 1 *****" << std::endl;
+    std::cout << std::endl << "***** In QE Private Test Case 1 *****" << std::endl;
     RC rc = success;
 
     auto *ts = new TableScan(rm, "largeleft2");
-    int compVal = 9999;
+    int compVal = 19999;
 
     // Set up condition
     Condition cond1;
@@ -55,7 +55,7 @@ RC privateTestCase_1() {
         tscount++;
 
         if (filter2->getNextTuple(data2) == QE_EOF) {
-            std::cerr << "***** [FAIL] The numbers of results from both scan: " << count << " " << tscount << " "
+            std::cout << "***** [FAIL] The numbers of results from both scan: " << count << " " << tscount << " "
                       << iscount << " do not match. ***** " << std::endl;
             rc = fail;
             break;
@@ -70,8 +70,8 @@ RC privateTestCase_1() {
     }
 
     // largeleft.B < 9999 from [10-9999] = 9989
-    if (count != 9989 || tscount != count || iscount != count) {
-        std::cerr << " ***** [FAIL] The number of result: " << count << " is not correct. ***** " << std::endl;
+    if (count != 19989 || tscount != count || iscount != count) {
+        std::cout << " ***** [FAIL] The number of result: " << count << " is not correct. ***** " << std::endl;
         rc = fail;
     }
 
@@ -89,25 +89,25 @@ int main() {
     // Indexes created: largeleft2.B
 
     if (createLargeLeftTable2() != success) {
-        std::cerr << "***** [FAIL] QE Private Test Case 1 failed. *****" << std::endl;
+        std::cout << "***** [FAIL] QE Private Test Case 1 failed. *****" << std::endl;
         return fail;
     }
 
     if (createIndexforLargeLeftB2() != success) {
-        std::cerr << "***** [FAIL] QE Private Test Case 1 failed. *****" << std::endl;
+        std::cout << "***** [FAIL] QE Private Test Case 1 failed. *****" << std::endl;
         return fail;
     }
 
     if (populateLargeLeftTable2() != success) {
-        std::cerr << "***** [FAIL] QE Private Test Case 1 failed. *****" << std::endl;
+        std::cout << "***** [FAIL] QE Private Test Case 1 failed. *****" << std::endl;
         return fail;
     }
 
     if (privateTestCase_1() != success) {
-        std::cerr << "***** [FAIL] QE Private Test Case 1 failed. *****" << std::endl;
+        std::cout << "***** [FAIL] QE Private Test Case 1 failed. *****" << std::endl;
         return fail;
     } else {
-        std::cerr << "***** QE Private Test Case 1 finished. The result will be examined. *****" << std::endl;
+        std::cout << "***** QE Private Test Case 1 finished. The result will be examined. *****" << std::endl;
         return success;
     }
 }

@@ -6,11 +6,11 @@ RC privateTestCase_2() {
     // Table scan with filter
     // Index scan with filter
     // compare the results from both scans
-    std::cerr << std::endl << "***** In QE Private Test Case 2 *****" << std::endl;
+    std::cout << std::endl << "***** In QE Private Test Case 2 *****" << std::endl;
     RC rc = success;
 
     auto *ts = new TableScan(rm, "left2");
-    int compVal = 50;
+    int compVal = 52;
 
     // Set up condition
     Condition cond1;
@@ -60,7 +60,7 @@ RC privateTestCase_2() {
         tscount++;
 
         if (filter2->getNextTuple(data2) == QE_EOF) {
-            std::cerr << " ***** [FAIL] The numbers of results: " << count << " " << tscount << " " << iscount
+            std::cout << " ***** [FAIL] The numbers of results: " << count << " " << tscount << " " << iscount
                       << " from both scan do not match. ***** " << std::endl;
             rc = fail;
             break;
@@ -88,9 +88,9 @@ RC privateTestCase_2() {
         count++;
     }
 
-    // left.B [10-109] : 40
-    if (count != 40 || nullCount1 != 20 || nullCount2 != 20) {
-        std::cerr << "***** [FAIL] The number of result: " << count << " " << nullCount1 << " " << nullCount2
+    // left2.B < 52 => [10-51] = 42 & [null of left2.A] = 21
+    if (count != 42 || nullCount1 != 21 || nullCount2 != 21) {
+        std::cout << "***** [FAIL] The number of result: " << count << " " << nullCount1 << " " << nullCount2
                   << " is not correct. ***** " << std::endl;
         rc = fail;
     }
@@ -109,25 +109,25 @@ int main() {
     // Indexes created: left2.B
 
     if (createLeftTable2() != success) {
-        std::cerr << "***** [FAIL] QE Private Test Case 2 failed. *****" << std::endl;
+        std::cout << "***** [FAIL] QE Private Test Case 2 failed. *****" << std::endl;
         return fail;
     }
 
     if (createIndexforLeftB2() != success) {
-        std::cerr << "***** [FAIL] QE Private Test Case 2 failed. *****" << std::endl;
+        std::cout << "***** [FAIL] QE Private Test Case 2 failed. *****" << std::endl;
         return fail;
     }
 
     if (populateLeftTable2() != success) {
-        std::cerr << "***** [FAIL] QE Private Test Case 2 failed. *****" << std::endl;
+        std::cout << "***** [FAIL] QE Private Test Case 2 failed. *****" << std::endl;
         return fail;
     }
 
     if (privateTestCase_2() != success) {
-        std::cerr << "***** [FAIL] QE Private Test Case 2 failed. *****" << std::endl;
+        std::cout << "***** [FAIL] QE Private Test Case 2 failed. *****" << std::endl;
         return fail;
     } else {
-        std::cerr << "***** QE Private Test Case 2 finished. The result will be examined. *****" << std::endl;
+        std::cout << "***** QE Private Test Case 2 finished. The result will be examined. *****" << std::endl;
         return success;
     }
 }

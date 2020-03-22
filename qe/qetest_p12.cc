@@ -6,7 +6,7 @@ RC privateTestCase_12() {
     // Aggregate -- COUNT (with GroupBy)
     // SELECT group.B, COUNT(group.A) FROM group where group.B < 5 GROUP BY group.B
 
-    std::cerr << std::endl << "***** In QE Private Test Case 12 *****" << std::endl;
+    std::cout << std::endl << "***** In QE Private Test Case 12 *****" << std::endl;
 
     RC rc = 0;
 
@@ -53,16 +53,16 @@ RC privateTestCase_12() {
 
         // Print group.B
         idVal = *(int *) ((char *) data + offset + 1);
-        std::cerr << "group.B " << idVal;
+        std::cout << "group.B " << idVal;
         offset += sizeof(int);
 
         // Print COUNT(group.A)
         countVal = *(float *) ((char *) data + offset + 1);
-        std::cerr << "  COUNT(group.A) " << countVal << std::endl;
+        std::cout << "  COUNT(group.A) " << countVal << std::endl;
 
         memset(data, 0, bufSize);
 //         if (countVal != 4) {
-//             std::cerr << "***** The group-based aggregation is not working properly. *****" << std::endl;
+//             std::cout << "***** The group-based aggregation is not working properly. *****" << std::endl;
 //         	rc = fail;
 //         	goto clean_up;
 //         }
@@ -70,7 +70,7 @@ RC privateTestCase_12() {
     }
 
     if (expectedResultCnt != actualResultCnt) {
-        std::cerr << "***** The number of returned tuple: " << actualResultCnt << " is not correct. *****" << std::endl;
+        std::cout << "***** The number of returned tuple: " << actualResultCnt << " is not correct. *****" << std::endl;
         rc = fail;
     }
 
@@ -84,10 +84,10 @@ RC privateTestCase_12() {
 int main() {
 
     if (privateTestCase_12() != success) {
-        std::cerr << "***** [FAIL] QE Private Test Case 12 failed. *****" << std::endl;
+        std::cout << "***** [FAIL] QE Private Test Case 12 failed. *****" << std::endl;
         return fail;
     } else {
-        std::cerr << "***** QE Private Test Case 12 finished. The result will be examined. *****" << std::endl;
+        std::cout << "***** QE Private Test Case 12 finished. The result will be examined. *****" << std::endl;
         return success;
     }
 }

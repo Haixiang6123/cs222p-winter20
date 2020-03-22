@@ -10,7 +10,7 @@ RC privateTestCase_3() {
     RC rc = success;
 
     auto *ts = new TableScan(rm, "largeleft2");
-    int compVal = largeTupleCount * 2 - 990;
+    int compVal = largeTupleCount * 2 - 1000;
 
     // Set up condition
     Condition cond1;
@@ -85,7 +85,7 @@ RC privateTestCase_3() {
         count++;
     }
 
-    if (count != 1000) {
+    if (count != 1010) {
         std::cout << " ***** [FAIL] The number of result: " << count << " is not correct. ***** " << std::endl;
         rc = fail;
     }

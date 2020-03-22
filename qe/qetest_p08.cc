@@ -5,7 +5,7 @@ RC privateTestCase_8() {
     // (+10 extra credit points will be given based on the results of the GHJ related tests)
     // 1. GHJoin -- on Varchar Attribute
     // 2. GHJoin -- on INT Attribute
-    std::cerr << std::endl << "***** In QE Test Private Test Case 8 *****" << std::endl;
+    std::cout << std::endl << "***** In QE Test Private Test Case 8 *****" << std::endl;
 
     RC rc = success;
 
@@ -71,24 +71,24 @@ RC privateTestCase_8() {
 
         // At this point, partitions should be on disk.
 
-        std::cerr << (actualResultCnt + 1) << " / " << expectedResultCnt << " tuples: ";
+        std::cout << (actualResultCnt + 1) << " / " << expectedResultCnt << " tuples: ";
         int offset = 0;
         // is an attribute leftvarchar.A NULL?
         nullBit = *(unsigned char *) ((char *) data) & ((unsigned) 1 << (unsigned) 7);
         if (nullBit) {
-            std::cerr << std::endl << "***** A returned value is not correct. *****" << std::endl;
+            std::cout << std::endl << "***** A returned value is not correct. *****" << std::endl;
             rc = fail;
             break;
         }
         // Print left.A
         int leftVarcharA = *(int *) ((char *) data + offset + 1);
-        std::cerr << "leftvarchar.A " << leftVarcharA;
+        std::cout << "leftvarchar.A " << leftVarcharA;
         offset += sizeof(int);
 
         // is an attribute left.B NULL?
         nullBit = *(unsigned char *) ((char *) data) & ((unsigned) 1 << (unsigned) 6);
         if (nullBit) {
-            std::cerr << std::endl << "***** A returned value is not correct. *****" << std::endl;
+            std::cout << std::endl << "***** A returned value is not correct. *****" << std::endl;
             rc = fail;
             break;
         }
@@ -100,12 +100,12 @@ RC privateTestCase_8() {
         memcpy(b, (char *) data + offset + 1, length);
         b[length] = '\0';
         offset += length;
-        std::cerr << " B " << b;
+        std::cout << " B " << b;
 
         // is an attribute right.C NULL?
         nullBit = *(unsigned char *) ((char *) data) & ((unsigned) 1 << (unsigned) 4);
         if (nullBit) {
-            std::cerr << std::endl << "***** A returned value is not correct. *****" << std::endl;
+            std::cout << std::endl << "***** A returned value is not correct. *****" << std::endl;
             rc = fail;
             break;
         }
@@ -114,7 +114,7 @@ RC privateTestCase_8() {
         offset = offset + 4 + length;
 
         // Print right.C
-        std::cerr << "  rightvarchar.C " << *(float *) ((char *) data + offset + 1) << std::endl;
+        std::cout << "  rightvarchar.C " << *(float *) ((char *) data + offset + 1) << std::endl;
         offset += sizeof(float);
 
         // left.A
@@ -124,7 +124,7 @@ RC privateTestCase_8() {
         // left.B
         int lb = *(int *) ((char *) data + offset + 1);
         if (la != leftVarcharA || lb != (leftVarcharA + 10)) {
-            std::cerr << std::endl << "***** A returned value is not correct. *****" << std::endl;
+            std::cout << std::endl << "***** A returned value is not correct. *****" << std::endl;
             rc = fail;
             break;
         }
@@ -134,7 +134,7 @@ RC privateTestCase_8() {
     }
 
     if (expectedResultCnt != actualResultCnt) {
-        std::cerr << "***** The number of returned tuple: " << actualResultCnt << " is not correct. *****" << std::endl;
+        std::cout << "***** The number of returned tuple: " << actualResultCnt << " is not correct. *****" << std::endl;
         rc = fail;
     }
 
@@ -152,10 +152,10 @@ RC privateTestCase_8() {
 int main() {
 
     if (privateTestCase_8() != success) {
-        std::cerr << "***** [FAIL] QE Private Test Case 8 failed. *****" << std::endl;
+        std::cout << "***** [FAIL] QE Private Test Case 8 failed. *****" << std::endl;
         return fail;
     } else {
-        std::cerr << "***** QE Private Test Case 8 finished. The result will be examined. *****" << std::endl;
+        std::cout << "***** QE Private Test Case 8 finished. The result will be examined. *****" << std::endl;
         return success;
     }
 }
